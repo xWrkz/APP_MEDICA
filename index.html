@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Salud</title>
+    <!-- Vinculamos el archivo CSS -->
+    <link rel="stylesheet" href="estilo.css">
+    <!-- Incluir librería MQTT.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Monitor de Salud</h1>
+        <div id="connection-status">
+            <!-- Mostrar el estado de la conexión -->
+            <p id="connection-text">Conectando...</p>
+        </div>
+        <div id="labels">
+            <!-- Labels con los datos de los signos vitales -->
+            <div class="label">Temperatura: <span id="temperature">-</span></div>
+            <div class="label">O2 en sangre: <span id="oxygen">-</span></div>
+            <div class="label">Frecuencia Respiratoria: <span id="respiration">-</span></div>
+            <div class="label">Ritmo Cardiaco: <span id="heart-rate">-</span></div>
+        </div>
+        <div id="heart-container">
+            <div id="heart"></div>
+            <span id="heart-rate-text">75 bpm</span>
+        </div>
+        
+        
+        <div id="health-status">
+            <!-- Estado de salud del paciente (Estable o No Estable) -->
+            <p id="health-status-text">Estado de Salud: <span id="health-status">Cargando...</span></p>
+            <!-- Botón para silenciar o reactivar la alarma -->
+            <button id="mute-button" onclick="toggleAlarmMute()">Silenciar Alarma</button>
+            <!-- Audio para la alarma -->
+            <audio id="alarm-sound" src="alarma.mp3"></audio>
+        </div>
+        <div id="charts">
+            <!-- Gráficos con Chart.js -->
+            <canvas id="oxygenChart"></canvas>
+            <canvas id="respirationChart"></canvas>
+            <canvas id="heartRateChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Carga la librería Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vincula el archivo JS -->
+    <script src="app.js"></script>
+</body>
+</html>
