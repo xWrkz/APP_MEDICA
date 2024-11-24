@@ -28,7 +28,7 @@ const oxygenChart = new Chart(oxygenCtx, {
         responsive: true,
         scales: {
             y: {
-                min: 90,
+                min: 70,
                 max: 100
             }
         }
@@ -52,7 +52,7 @@ const respirationChart = new Chart(respirationCtx, {
         responsive: true,
         scales: {
             y: {
-                min: 12,
+                min: 0,
                 max: 20
             }
         }
@@ -76,8 +76,8 @@ const heartRateChart = new Chart(heartRateCtx, {
         responsive: true,
         scales: {
             y: {
-                min: 60,
-                max: 100
+                min: 40,
+                max: 200
             }
         }
     }
