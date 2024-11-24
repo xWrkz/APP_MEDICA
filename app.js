@@ -116,9 +116,14 @@ let alarmMuted = false; // Estado del silencio de la alarma
 // Reproducir la alarma
 function playAlarm() {
     const alarmSound = document.getElementById('alarm-sound');
-    alarmSound.loop = true;
-    alarmSound.play();
+    if (alarmSound) {
+        alarmSound.loop = true;
+        alarmSound.play();
+    } else {
+        console.error('No se encontró el elemento de audio');
+    }
 }
+
 
 
 // Detener la alarma
@@ -158,7 +163,6 @@ function checkHealthStatus(temperature, oxygen, respiration, heartRate) {
     }
 }
 
-
 // Función para actualizar los gráficos
 function updateCharts(oxygen, respiration, heartRate) {
     if (isNaN(oxygen) || isNaN(respiration) || isNaN(heartRate)) {
@@ -181,8 +185,6 @@ function updateCharts(oxygen, respiration, heartRate) {
     respirationChart.update();
     heartRateChart.update();
 }
-
-
 
 // Animar el corazón según el ritmo cardíaco
 function updateHeartAnimation(heartRate) {
