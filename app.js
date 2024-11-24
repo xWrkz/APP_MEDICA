@@ -124,8 +124,6 @@ function playAlarm() {
     }
 }
 
-
-
 // Detener la alarma
 function stopAlarm() {
     const alarmSound = document.getElementById('alarm-sound');
