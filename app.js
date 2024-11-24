@@ -120,6 +120,7 @@ function playAlarm() {
     alarmSound.play();
 }
 
+
 // Detener la alarma
 function stopAlarm() {
     const alarmSound = document.getElementById('alarm-sound');
@@ -150,12 +151,13 @@ function checkHealthStatus(temperature, oxygen, respiration, heartRate) {
 
     if (status === "No Estable") {
         healthStatusElement.style.color = "red";
-        if (!alarmMuted) playAlarm();
+        if (!alarmMuted) playAlarm(); // Asegúrate de que esta función sea llamada
     } else {
         healthStatusElement.style.color = "green";
         stopAlarm();
     }
 }
+
 
 // Función para actualizar los gráficos
 function updateCharts(oxygen, respiration, heartRate) {
@@ -168,10 +170,12 @@ function updateCharts(oxygen, respiration, heartRate) {
     if (respirationChart.data.datasets[0].data.length > 10) respirationChart.data.datasets[0].data.shift();
     if (heartRateChart.data.datasets[0].data.length > 10) heartRateChart.data.datasets[0].data.shift();
 
+    // Actualizar los gráficos
     oxygenChart.update();
     respirationChart.update();
     heartRateChart.update();
 }
+
 
 // Animar el corazón según el ritmo cardíaco
 function updateHeartAnimation(heartRate) {
@@ -228,14 +232,23 @@ client.on('message', (topic, message) => {
     let respiration = parseFloat(document.getElementById('respiration').textContent) || 0;
     let heartRate = parseFloat(document.getElementById('heart-rate').textContent) || 0;
 
-    if (topic === "snTemp") temperature = payload;
-    else if (topic === "snSpo2") oxygen = payload;
-    else if (topic === "snFR") respiration = payload;
-    else if (topic === "snPul") heartRate = payload;
+    if (topic === "snTemp") {
+        temperature = payload;
+    } else if (topic === "snSpo2") {
+        oxygen = payload;
+    } else if (topic === "snFR") {
+        respiration = payload;
+    } else if (topic === "snPul") {
+        heartRate = payload;
+    }
 
-    // Actualizar labels, gráficos y estado de salud
+    // Actualizar los labels
     updateLabels(temperature, oxygen, respiration, heartRate);
+
+    // Actualizar el estado de salud
     checkHealthStatus(temperature, oxygen, respiration, heartRate);
+
+    // Actualizar gráficos
     updateCharts(oxygen, respiration, heartRate);
 });
 
