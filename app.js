@@ -84,17 +84,23 @@ const heartRateChart = new Chart(heartRateCtx, {
 
 // Función para actualizar los valores de los labels
 function updateLabels(temperature, oxygen, respiration, heartRate) {
-    document.getElementById('temperature').textContent = `${temperature} °C`;
-    document.getElementById('oxygen').textContent = `${oxygen}%`;
-    document.getElementById('respiration').textContent = `${respiration} rpm`;
-    document.getElementById('heart-rate').textContent = `${heartRate} bpm`;
+    const tempElem = document.getElementById('temperature');
+    const oxygenElem = document.getElementById('oxygen');
+    const respirationElem = document.getElementById('respiration');
+    const heartRateElem = document.getElementById('heart-rate');
 
-    // Actualizar el número dentro del corazón
-    document.getElementById('heart-rate-number').textContent = heartRate;
+    if (tempElem) tempElem.textContent = `${temperature} °C`;
+    if (oxygenElem) oxygenElem.textContent = `${oxygen}%`;
+    if (respirationElem) respirationElem.textContent = `${respiration} rpm`;
+    if (heartRateElem) heartRateElem.textContent = `${heartRate} bpm`;
 
-    // Actualizar la animación del corazón
+    // Actualizar animación del corazón
+    const heartNumber = document.getElementById('heart-rate-number');
+    if (heartNumber) heartNumber.textContent = heartRate;
+
     updateHeartAnimation(heartRate);
 }
+
 
 // Botón para silenciar alarma
 const muteButton = document.getElementById('mute-button');
