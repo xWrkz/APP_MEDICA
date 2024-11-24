@@ -79,7 +79,7 @@ h1 {
 /* Contenedor del corazón */
 #heart-container {
     position: relative;
-    width: 150px;
+    width: 200px;
     height: 150px;
     margin: 20px auto;
     display: flex;
@@ -93,14 +93,11 @@ h1 {
     width: 120px; /* Tamaño reducido del corazón */
     height: 120px; /* Tamaño reducido del corazón */
     background-color: red;
-    transform: rotate(180deg); /* Rota el corazón 180 grados */
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto; /* Centra horizontalmente el corazón */
+    transform: rotate(45deg); /* Rota el corazón 45 grados */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 50% 50% 0 0; /* Redondea los bordes */
+    margin-top: 30px;
 }
 
 /* Crear la forma del corazón utilizando pseudo-elementos */
@@ -110,34 +107,29 @@ h1 {
     width: 120px;
     height: 120px;
     background-color: red;
-    border-radius: 50%;
-    top: 0;
-    left: 0;
+    border-radius: 50%; /* Crear círculos */
 }
 
 #heart::before {
-    left: 60px; /* Desplazar la parte izquierda */
+    top: -60px; /* Posicionar el círculo superior izquierdo */
+    left: 0;
 }
 
 #heart::after {
-    top: 60px; /* Desplazar la parte inferior */
-}
-
-/* Texto del ritmo cardíaco */
-#heart-rate-text {
-    position: absolute;
-    color: white;
-    font-size: 16px; /* Tamaño del texto ajustado */
-    font-weight: bold;
-    transform: rotate(-45deg); /* Rota el texto dentro del corazón */
+    top: 0px; /* Posicionar el círculo superior derecho */
+    left: -60px;
 }
 
 /* Animación de latido */
 @keyframes heartbeat {
     0%, 100% {
-        transform: scale(1) rotate(225deg); /* Corazón en su tamaño normal */
+        transform: scale(1) rotate(45deg); /* Corazón en su tamaño normal */
     }
     50% {
-        transform: scale(1.2) rotate(225deg); /* Corazón se expande para el latido */
+        transform: scale(1.2) rotate(45deg); /* Corazón se expande para el latido */
     }
+}
+
+#heart {
+    animation: heartbeat 1s infinite; /* Aplicar animación al corazón */
 }

@@ -161,6 +161,12 @@ function checkHealthStatus(temperature, oxygen, respiration, heartRate) {
 
 // Función para actualizar los gráficos
 function updateCharts(oxygen, respiration, heartRate) {
+    if (isNaN(oxygen) || isNaN(respiration) || isNaN(heartRate)) {
+        console.error('Datos inválidos para los gráficos');
+        return;
+    }
+    
+    // Actualizar los datos de los gráficos
     oxygenChart.data.datasets[0].data.push(oxygen);
     respirationChart.data.datasets[0].data.push(respiration);
     heartRateChart.data.datasets[0].data.push(heartRate);
@@ -175,6 +181,7 @@ function updateCharts(oxygen, respiration, heartRate) {
     respirationChart.update();
     heartRateChart.update();
 }
+
 
 
 // Animar el corazón según el ritmo cardíaco
@@ -225,7 +232,15 @@ client.on('close', () => {
 // Evento de recepción de mensajes
 client.on('message', (topic, message) => {
     const payload = parseFloat(message.toString());
+    
+    // Log de depuración
     console.log(`Mensaje recibido en el topic ${topic}: ${payload}`);
+
+    // Validación de datos
+    if (isNaN(payload)) {
+        console.error('Dato recibido no es válido:', message.toString());
+        return;  // Detener ejecución si el dato no es válido
+    }
 
     let temperature = parseFloat(document.getElementById('temperature').textContent) || 0;
     let oxygen = parseFloat(document.getElementById('oxygen').textContent) || 0;
