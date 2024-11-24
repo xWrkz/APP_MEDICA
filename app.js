@@ -1,7 +1,7 @@
 // Datos iniciales para los gráficos y labels
-let oxygenData = [97, 98, 95, 96, 97, 98, 96];  
-let respirationData = [16, 15, 17, 16, 14, 18, 17];  
-let heartRateData = [75, 80, 78, 76, 74, 79, 80];  
+let oxygenData = [97, 98, 95, 96, 97, 98, 96];
+let respirationData = [16, 15, 17, 16, 14, 18, 17];
+let heartRateData = [75, 80, 78, 76, 74, 79, 80];
 const alarmSound = new Audio('sonido/alarma.mp3');
 
 // Configuración de los gráficos de Chart.js
@@ -13,7 +13,7 @@ const heartRateCtx = document.getElementById('heartRateChart').getContext('2d');
 const oxygenChart = new Chart(oxygenCtx, {
     type: 'line',
     data: {
-        labels: ['1', '2', '3', '4', '5', '6', '7'], 
+        labels: ['1', '2', '3', '4', '5', '6', '7'],
         datasets: [{
             label: 'Oxígeno en sangre (%)',
             data: oxygenData,
@@ -96,7 +96,7 @@ function updateLabels(temperature, oxygen, respiration, heartRate) {
     updateHeartAnimation(heartRate);
 }
 
-//Boton para silenciar alarma
+// Botón para silenciar alarma
 const muteButton = document.getElementById('mute-button');
 
 muteButton.addEventListener('click', () => {
@@ -134,108 +134,58 @@ function toggleAlarmMute() {
 function checkHealthStatus(temperature, oxygen, respiration, heartRate) {
     let status = "Estable";
 
-    if (temperature < 36.5 || temperature > 37.5) {
-        status = "No Estable";
-    } else if (oxygen < 95) {
-        status = "No Estable";
-    } else if (respiration < 12 || respiration > 20) {
-        status = "No Estable";
-    } else if (heartRate < 60 || heartRate > 100) {
+    if (temperature < 36.5 || temperature > 37.5 || oxygen < 95 || respiration < 12 || respiration > 20 || heartRate < 60 || heartRate > 100) {
         status = "No Estable";
     }
 
     const healthStatusElement = document.getElementById('health-status');
-
     healthStatusElement.textContent = status;
 
     if (status === "No Estable") {
         healthStatusElement.style.color = "red";
-        playAlarm();
+        if (!alarmMuted) playAlarm();
     } else {
         healthStatusElement.style.color = "green";
         stopAlarm();
     }
-
-    // Actualizar el ritmo cardíaco y animación del corazón
-    updateHeartRate(heartRate);
 }
 
+// Función para actualizar los gráficos
+function updateCharts(oxygen, respiration, heartRate) {
+    oxygenChart.data.datasets[0].data.push(oxygen);
+    respirationChart.data.datasets[0].data.push(respiration);
+    heartRateChart.data.datasets[0].data.push(heartRate);
 
+    // Mantener solo los últimos 10 datos
+    if (oxygenChart.data.datasets[0].data.length > 10) oxygenChart.data.datasets[0].data.shift();
+    if (respirationChart.data.datasets[0].data.length > 10) respirationChart.data.datasets[0].data.shift();
+    if (heartRateChart.data.datasets[0].data.length > 10) heartRateChart.data.datasets[0].data.shift();
 
-
-
-
-// Función que se ejecuta cuando se recibe un mensaje MQTT
-function onMessageArrived(topic, payload) {
-    console.log(`Mensaje recibido en el topic ${topic}: ${payload}`);
-
-    const temperature = parseFloat(document.getElementById('temperature').textContent);
-    const oxygen = parseFloat(document.getElementById('oxygen').textContent);
-    const respiration = parseFloat(document.getElementById('respiration').textContent);
-    const heartRate = parseFloat(document.getElementById('heart-rate').textContent);
-
-    if (topic === "snTemp") {
-        updateLabels(payload, oxygen, respiration, heartRate);
-    } else if (topic === "snSpo2") {
-        updateLabels(temperature, payload, respiration, heartRate);
-    } else if (topic === "snFR") {
-        updateLabels(temperature, oxygen, payload, heartRate);
-    } else if (topic === "snPul") {
-        updateLabels(temperature, oxygen, respiration, payload);
-    }
-
-    // Actualizar el estado de salud
-    checkHealthStatus(temperature, oxygen, respiration, heartRate);
+    oxygenChart.update();
+    respirationChart.update();
+    heartRateChart.update();
 }
 
+// Animar el corazón según el ritmo cardíaco
 function updateHeartAnimation(heartRate) {
     const heart = document.getElementById('heart');
-
-    // Determinar la duración de la animación según el ritmo cardíaco
-    let animationSpeed;
-    if (heartRate < 60) {
-        animationSpeed = 2; // Más lento (bradicardia)
-    } else if (heartRate > 100) {
-        animationSpeed = 0.5; // Más rápido (taquicardia)
-    } else {
-        animationSpeed = 1; // Normal
-    }
-
-    // Actualizar la duración de la animación
-    heart.style.animationDuration = `${animationSpeed}s`;
-}
-
-function updateHeartRate(heartRate) {
-    const heart = document.getElementById('heart');
-    const heartRateText = document.getElementById('heart-rate-text');
-
-    // Actualizar texto del ritmo cardíaco
-    heartRateText.textContent = `${heartRate} bpm`;
-
-    // Cambiar la velocidad de latido según el ritmo cardíaco
     let animationSpeed = 1; // Velocidad normal
-    if (heartRate < 60) {
-        animationSpeed = 2; // Más lento para bradicardia
-    } else if (heartRate > 100) {
-        animationSpeed = 0.5; // Más rápido para taquicardia
-    }
+    if (heartRate < 60) animationSpeed = 2; // Más lento (bradicardia)
+    else if (heartRate > 100) animationSpeed = 0.5; // Más rápido (taquicardia)
     heart.style.animationDuration = `${animationSpeed}s`;
 }
-
-
-
 
 // Conexión al servidor MQTT privado de HiveMQ
-const brokerUrl = 'wss://5d4df63fd1494e8c915c2501ed374e7e.s1.eu.hivemq.cloud:8883';  // Usando WebSocket (wss://)
-const username = "Wrkz";  
-const password = "Wrkz...";  
+const brokerUrl = 'wss://5d4df63fd1494e8c915c2501ed374e7e.s1.eu.hivemq.cloud:8884/mqtt'; // Usando WebSocket (wss://)
+const username = "Wrkz";
+const password = "Wrkz...";
 
 // Crear el cliente MQTT usando MQTT.js
 const client = mqtt.connect(brokerUrl, {
     username: username,
     password: password,
-    reconnectPeriod: 1000,  
-    clientId: 'clientId-' + Math.random().toString(36).substr(2, 9),  // Generar un clientId único
+    reconnectPeriod: 1000,
+    clientId: 'clientId-' + Math.random().toString(36).substr(2, 9) // Generar un clientId único
 });
 
 // Estado de la conexión
@@ -244,7 +194,7 @@ const connectionText = document.getElementById('connection-text');
 // Evento de conexión
 client.on('connect', () => {
     console.log('Conectado al servidor MQTT de HiveMQ');
-    connectionText.textContent = 'Conectado';  
+    connectionText.textContent = 'Conectado';
     client.subscribe('snTemp');
     client.subscribe('snSpo2');
     client.subscribe('snPul');
@@ -254,14 +204,30 @@ client.on('connect', () => {
 // Manejar errores y desconexión
 client.on('error', (err) => {
     console.error('Error en la conexión:', err);
-    connectionText.textContent = 'No Conectado'; 
+    connectionText.textContent = 'No Conectado';
 });
 
 client.on('close', () => {
-    connectionText.textContent = 'No Conectado'; 
+    connectionText.textContent = 'No Conectado';
 });
 
 // Evento de recepción de mensajes
 client.on('message', (topic, message) => {
-    onMessageArrived(topic, parseFloat(message.toString()));
+    const payload = parseFloat(message.toString());
+    console.log(`Mensaje recibido en el topic ${topic}: ${payload}`);
+
+    let temperature = parseFloat(document.getElementById('temperature').textContent) || 0;
+    let oxygen = parseFloat(document.getElementById('oxygen').textContent) || 0;
+    let respiration = parseFloat(document.getElementById('respiration').textContent) || 0;
+    let heartRate = parseFloat(document.getElementById('heart-rate').textContent) || 0;
+
+    if (topic === "snTemp") temperature = payload;
+    else if (topic === "snSpo2") oxygen = payload;
+    else if (topic === "snFR") respiration = payload;
+    else if (topic === "snPul") heartRate = payload;
+
+    // Actualizar labels, gráficos y estado de salud
+    updateLabels(temperature, oxygen, respiration, heartRate);
+    checkHealthStatus(temperature, oxygen, respiration, heartRate);
+    updateCharts(oxygen, respiration, heartRate);
 });
