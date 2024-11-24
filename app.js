@@ -1,4 +1,5 @@
-// Datos iniciales para los gráficos y labels
+document.addEventListener('DOMContentLoaded', () => {
+    // Datos iniciales para los gráficos y labels
 let oxygenData = [97, 98, 95, 96, 97, 98, 96];
 let respirationData = [16, 15, 17, 16, 14, 18, 17];
 let heartRateData = [75, 80, 78, 76, 74, 79, 80];
@@ -236,4 +237,6 @@ client.on('message', (topic, message) => {
     updateLabels(temperature, oxygen, respiration, heartRate);
     checkHealthStatus(temperature, oxygen, respiration, heartRate);
     updateCharts(oxygen, respiration, heartRate);
+});
+
 });
